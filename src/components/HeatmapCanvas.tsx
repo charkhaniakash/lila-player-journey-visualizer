@@ -36,14 +36,6 @@ const MODE_CONFIG: Record<string, { radius: number; blur: number; maxVal: number
 
 export function HeatmapCanvas({ mapConfig, heatmapData, mode }: HeatmapCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mapImgRef = useRef<HTMLImageElement | null>(null);
-
-  /* Load minimap image for background */
-  useEffect(() => {
-    const img = new Image();
-    img.src = mapConfig.minimapPath;
-    img.onload = () => { mapImgRef.current = img; };
-  }, [mapConfig.minimapPath]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -56,14 +48,6 @@ export function HeatmapCanvas({ mapConfig, heatmapData, mode }: HeatmapCanvasPro
     canvas.width = CANVAS_SIZE * dpr;
     canvas.height = CANVAS_SIZE * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    /* Draw minimap as dimmed background */
-    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    if (mapImgRef.current) {
-      ctx.globalAlpha = 0.4;
-      ctx.drawImage(mapImgRef.current, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-      ctx.globalAlpha = 1;
-    }
 
     const config = MODE_CONFIG[mode];
     if (!config) return;
@@ -90,16 +74,23 @@ export function HeatmapCanvas({ mapConfig, heatmapData, mode }: HeatmapCanvasPro
   if (mode === 'paths') return null;
 
   return (
-    <>
+    <div className="relative w-full h-full flex items-center justify-center">
+      {/* Dimmed minimap terrain background so heatmap hotspots overlay onto real locations */}
+      <img
+        src={mapConfig.minimapPath}
+        alt={mapConfig.label}
+        className="w-full h-full object-contain absolute inset-0 opacity-45 select-none pointer-events-none"
+        style={{ maxWidth: CANVAS_SIZE, maxHeight: CANVAS_SIZE }}
+      />
       <canvas
         ref={canvasRef}
-        className="w-full h-full object-contain absolute inset-0"
+        className="w-full h-full object-contain absolute inset-0 pointer-events-none"
         style={{ imageRendering: 'auto', maxWidth: CANVAS_SIZE, maxHeight: CANVAS_SIZE }}
       />
       {/* Label showing which heatmap is active */}
-      <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 rounded text-xs font-medium text-gray-300 backdrop-blur-sm">
+      <div className="absolute top-3 left-3 px-2 py-1 bg-black/70 rounded text-xs font-medium text-gray-200 backdrop-blur-sm border border-gray-800 z-10">
         {mode.charAt(0).toUpperCase() + mode.slice(1)} Heatmap
       </div>
-    </>
+    </div>
   );
 }
