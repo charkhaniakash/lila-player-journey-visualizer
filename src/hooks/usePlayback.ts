@@ -15,7 +15,7 @@ interface UsePlaybackResult {
 export function usePlayback(durationS: number): UsePlaybackResult {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(8);
   const lastFrameRef = useRef<number>(0);
   const rafRef = useRef<number>(0);
 

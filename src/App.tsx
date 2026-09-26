@@ -36,10 +36,12 @@ export function App() {
   const durationS = matchData?.durationS ?? 0;
   const playback = usePlayback(durationS);
 
-  /* Start at t=0 paused when match changes — user presses play to watch it unfold */
+  /* Start at t=0 paused when match changes — user presses play to watch it unfold.
+     Only depends on selectedMatchId to avoid double-reset when durationS resolves from 0. */
   useEffect(() => {
     playback.reset();
-  }, [selectedMatchId, durationS]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMatchId]);
 
   /* Load heatmap data when map changes */
   useEffect(() => {

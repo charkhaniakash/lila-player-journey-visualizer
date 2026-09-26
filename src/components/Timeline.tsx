@@ -52,13 +52,26 @@ export function Timeline({
       </span>
 
       {/* Scrubber */}
-      <div className="flex-1 relative group">
-        <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+      <div className="flex-1 relative group cursor-pointer">
+        {/* Track background */}
+        <div className="h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+          {/* Filled progress */}
           <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-[width] duration-75"
-            style={{ width: `${progress}%` }}
+            className="h-full rounded-full"
+            style={{
+              width: `${progress}%`,
+              background: 'linear-gradient(90deg, #6366f1 0%, #8b5cf6 40%, #a78bfa 70%, #c4b5fd 100%)',
+              boxShadow: isPlaying ? '0 0 12px 2px rgba(139, 92, 246, 0.6)' : 'none',
+            }}
           />
         </div>
+        {/* Playhead dot */}
+        {progress > 0 && (
+          <div
+            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 border-violet-500 shadow-lg shadow-violet-500/50 pointer-events-none"
+            style={{ left: `calc(${progress}% - 8px)` }}
+          />
+        )}
         <input
           type="range"
           min={0}
