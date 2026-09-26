@@ -120,10 +120,19 @@ export function MapCanvas({ mapConfig, matchData, currentTime, showBotPaths, onH
     const mx = (e.clientX - rect.left) * scaleX;
     const my = (e.clientY - rect.top) * scaleY;
 
-    const hitRadius = 12;
-    const hit = markerPositionsRef.current.find(
-      m => Math.abs(m.px - mx) < hitRadius && Math.abs(m.py - my) < hitRadius
-    );
+    /* Generous hit radius — markers are small (~7px) and canvas scales down for display,
+       so a strict radius makes them nearly impossible to hover precisely. Use distance-based
+       hit test to pick the nearest marker, not just the first one in the array. */
+    const hitRadius = 20;
+    let hit: { event: PlayerEvent; px: number; py: number } | null = null;
+    let bestDist = hitRadius;
+    for (const m of markerPositionsRef.current) {
+      const dist = Math.hypot(m.px - mx, m.py - my);
+      if (dist < bestDist) {
+        bestDist = dist;
+        hit = m;
+      }
+    }
 
     onHoverEvent(hit?.event ?? null, e.clientX, e.clientY);
   }, [onHoverEvent]);
@@ -146,7 +155,7 @@ export function MapCanvas({ mapConfig, matchData, currentTime, showBotPaths, onH
 /* Draw distinct markers per event type */
 function drawMarker(ctx: CanvasRenderingContext2D, event: PlayerEvent, px: number, py: number) {
   const color = eventColor(event.event);
-  const size = 5;
+  const size = 8;
 
   ctx.save();
   ctx.translate(px, py);
