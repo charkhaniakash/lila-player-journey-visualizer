@@ -82,11 +82,13 @@ export function MapCanvas({ mapConfig, matchData, currentTime, showBotPaths, onH
       const isBot = visibleEvents.find(e => e.userId === userId)?.isBot ?? false;
 
       ctx.beginPath();
-      ctx.strokeStyle = isBot ? 'rgba(107, 114, 128, 0.3)' : playerColor(userId);
-      ctx.lineWidth = isBot ? 1 : 1.5;
-      ctx.globalAlpha = isBot ? 0.4 : 0.8;
+      /* Bots: slate grey dashed, ~65% opacity — muted but clearly visible.
+         Humans: saturated per-player HSL hue, thicker + solid. */
+      ctx.strokeStyle = isBot ? '#94a3b8' : playerColor(userId);
+      ctx.lineWidth = isBot ? 1.2 : 1.8;
+      ctx.globalAlpha = isBot ? 0.65 : 0.9;
 
-      if (isBot) ctx.setLineDash([4, 4]);
+      if (isBot) ctx.setLineDash([5, 4]);
       else ctx.setLineDash([]);
 
       ctx.moveTo(points[0]!.px, points[0]!.py);

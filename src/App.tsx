@@ -36,12 +36,17 @@ export function App() {
   const durationS = matchData?.durationS ?? 0;
   const playback = usePlayback(durationS);
 
-  /* Start at t=0 paused when match changes — user presses play to watch it unfold.
-     Only depends on selectedMatchId to avoid double-reset when durationS resolves from 0. */
+  /* When a match loads, show the full match (all paths + markers visible).
+     Level Designers want to see the whole picture immediately, then scrub back or
+     press reset to replay from t=0. Depends on durationS so it fires once matchData
+     resolves (durationS goes 0 → real value on match fetch complete). */
   useEffect(() => {
-    playback.reset();
+    if (durationS > 0) {
+      playback.pause();
+      playback.setCurrentTime(durationS);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMatchId]);
+  }, [selectedMatchId, durationS]);
 
   /* Load heatmap data when map changes */
   useEffect(() => {
