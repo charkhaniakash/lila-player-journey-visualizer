@@ -228,15 +228,8 @@ async function main() {
     heatmaps[mapId] = { kills: [], deaths: [], traffic: [] };
   }
 
-  let positionCounter = {};
+  const positionCounter = {};
 
-  for (const [, events] of matchEvents) {
-    const meta = matchMeta.get(events[0]?.userId ? events[0]?.userId : '');
-    // Get mapId from first event's match metadata
-    const matchId = events[0]?.event ? undefined : undefined; // need to get mapId differently
-  }
-
-  // Re-aggregate from matchEvents properly
   for (const [matchId, events] of matchEvents) {
     const meta = matchMeta.get(matchId);
     if (!meta) continue;
