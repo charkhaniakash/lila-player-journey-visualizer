@@ -36,10 +36,9 @@ export function App() {
   const durationS = matchData?.durationS ?? 0;
   const playback = usePlayback(durationS);
 
-  /* Reset playback when match changes */
+  /* Start at t=0 paused when match changes — user presses play to watch it unfold */
   useEffect(() => {
     playback.reset();
-    playback.setCurrentTime(durationS);
   }, [selectedMatchId, durationS]);
 
   /* Load heatmap data when map changes */
