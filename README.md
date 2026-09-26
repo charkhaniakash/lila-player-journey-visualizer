@@ -2,9 +2,13 @@
 
 > A web-based tool for visualizing player movement, combat, and loot events on game minimaps from 5 days of LILA BLACK production telemetry.
 
-**🔗 Deployed URL:** _[To be added after Vercel deployment]_
+**🔗 Deployed URL:** [lila-player-journey-visualizer-seven.vercel.app](https://lila-player-journey-visualizer-seven.vercel.app/)
 
-**🎥 Walkthrough Video:** _[To be added]_
+**🎥 Walkthrough Video:** [Loom Recording](https://www.loom.com/share/2de1fa6d64e34ac3891d034c23fe7ebd)
+
+**📐 Architecture:** [ARCHITECTURE.md](https://github.com/charkhaniakash/lila-player-journey-visualizer/blob/main/ARCHITECTURE.md)
+
+**💡 Insights:** [INSIGHTS.md](https://github.com/charkhaniakash/lila-player-journey-visualizer/blob/main/INSIGHTS.md)
 
 ---
 
