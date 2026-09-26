@@ -57,6 +57,16 @@ npm run dev
 
 The app will be available at `http://localhost:5173`.
 
+### Data Preprocessing
+
+The `npm run preprocess` step reads 1,243 parquet files from `player_data/`, decodes events, computes match-elapsed timestamps, and outputs:
+- `public/data/index.json` — metadata for all 796 matches (~160KB)
+- `public/data/matches/{id}.json` — per-match event data (796 files, ~8MB total)
+- `public/data/heatmaps/{map}.json` — precomputed kill/death/traffic point arrays (3 files)
+- `public/minimaps/*.webp` — resized minimap images (3 files, ~75-84KB each)
+
+Preprocessing takes **~1.5 seconds** on an M-series Mac. It's idempotent — safe to re-run.
+
 ### Environment Variables
 
 None required. All data is preprocessed and served statically.

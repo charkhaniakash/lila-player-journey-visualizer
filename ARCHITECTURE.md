@@ -111,8 +111,9 @@ Source minimaps are large and non-uniform (4320×4320, 2160×2158, 9000×9000). 
 1. **Timestamp is Unix seconds** — The parquet schema declares `timestamp[ms]` but the raw int64 values are Unix seconds (verified: `1770754537` → `2026-02-10T20:15:37Z`)
 2. **Bot detection via user_id format** — UUIDs (36 chars, contains dashes) = human; short numeric strings = bot. Cross-verified with event types (`Position` vs `BotPosition`)
 3. **Traffic heatmap subsamples every 5th Position event** — Full position data would be ~70K points per map; 1-in-5 sampling keeps heatmap JSON under 500KB while preserving spatial patterns
-4. **Minimap resize target is 1024×1024** — Balances visual quality with payload size. GrandRift (originally 2160×2158, not square) is stretched to square, which introduces ~0.1% distortion — negligible at this scale
-5. **Feb 14 is a partial day** — Only 37 matches vs 285 on Feb 10. We include it but don't draw conclusions from its volume
+4. **Match reconstruction** — Each parquet file represents one player's view of one match. To rebuild a full match, we aggregate all files sharing the same `match_id`, then sort by timestamp
+5. **Minimap resize target is 1024×1024** — Balances visual quality with payload size. GrandRift (originally 2160×2158, not square) is stretched to square, which introduces ~0.1% distortion — negligible at this scale
+6. **Feb 14 is a partial day** — Only 37 matches vs 285 on Feb 10. We include it but don't draw conclusions from its volume
 
 ---
 
@@ -127,3 +128,4 @@ Source minimaps are large and non-uniform (4320×4320, 2160×2158, 9000×9000). 
 | simpleheat | heatmap.js / deck.gl | Minimal API, canvas-native, no WebGL dependencies. Sufficient for our point counts (~2K-10K) |
 | Per-match JSON files | Single large data file | Lazy loading — only fetches data for the selected match. Keeps initial page load under 100KB |
 | Vite + React | Next.js | No SSR needed for a static visualization tool. Vite is faster to build and simpler to deploy |
+| Squash GrandRift to square | Preserve aspect ratio (letterbox) | Uniform 1024×1024 target simplifies coordinate mapping. The 2px height difference (2160 vs 2158) causes ~0.1% distortion — imperceptible at display size |
