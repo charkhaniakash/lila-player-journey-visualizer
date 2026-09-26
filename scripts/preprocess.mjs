@@ -128,7 +128,11 @@ async function main() {
 
           const event = decodeBytes(row[7]);
 
-          const isBot = fileIsBot || event === 'BotPosition' || event === 'BotKill' || event === 'BotKilled';
+          /* Every event in a parquet file belongs to that file's owner (human or bot),
+             so isBot is determined by the file's user_id shape, not by event type.
+             Note: `BotKill` / `BotKilled` are HUMAN events (human killed a bot / human was
+             killed by a bot) that happen to appear in human files — they must not flip isBot. */
+          const isBot = fileIsBot;
 
           if (!matchEvents.has(matchId)) {
             matchEvents.set(matchId, []);
