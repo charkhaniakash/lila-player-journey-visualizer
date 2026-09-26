@@ -25,3 +25,7 @@ dist-ssr
 
 # Large data folders (keep README and minimaps)
 player_data/February_*
+
+# Internal prompt files — never commit
+AI_BUILD_PROMPT.md
+FOLLOWUP_PROMPT.md
