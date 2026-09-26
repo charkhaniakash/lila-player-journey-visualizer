@@ -109,21 +109,24 @@ export function MapCanvas({ mapConfig, matchData, currentTime, showBotPaths, onH
 
   useEffect(() => { drawFrame(); }, [drawFrame]);
 
-  /* Hover hit-testing */
+  /* Hover hit-testing.
+     Canvas has `object-contain` which centers a square drawing area inside a possibly-
+     non-square element. We must map mouse → canvas coords using the actual drawn square,
+     not the raw element rect, or the offset shifts hits away from markers. */
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const scaleX = CANVAS_SIZE / rect.width;
-    const scaleY = CANVAS_SIZE / rect.height;
-    const mx = (e.clientX - rect.left) * scaleX;
-    const my = (e.clientY - rect.top) * scaleY;
+    const drawnSize = Math.min(rect.width, rect.height);
+    const offsetX = (rect.width - drawnSize) / 2;
+    const offsetY = (rect.height - drawnSize) / 2;
+    const scale = CANVAS_SIZE / drawnSize;
+    const mx = (e.clientX - rect.left - offsetX) * scale;
+    const my = (e.clientY - rect.top - offsetY) * scale;
 
-    /* Generous hit radius — markers are small (~7px) and canvas scales down for display,
-       so a strict radius makes them nearly impossible to hover precisely. Use distance-based
-       hit test to pick the nearest marker, not just the first one in the array. */
-    const hitRadius = 20;
+    /* Distance-based hit test — pick nearest marker within hit radius */
+    const hitRadius = 22;
     let hit: { event: PlayerEvent; px: number; py: number } | null = null;
     let bestDist = hitRadius;
     for (const m of markerPositionsRef.current) {
